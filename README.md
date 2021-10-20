@@ -6,3 +6,16 @@ https://www.tvnotas.com.mx/sites/default/files/styles/imagenprincipal_1024x576/p
 https://socialgeek.co/wp-content/uploads/2015/11/Foto-Vecindad-2.jpg
 
 Espero reconstruir el escenario principal con los objetos mostrados y además agregar otras funcionalidades dinámicas como poder desplazarte o que suceda una acción al acercarte a algún objeto.
+## Setup
+Se necesita descargar Node.js. y correr los siguientes comandos:
+
+```python
+
+
+# Para instalar las dependencias(sólo la primera vez)
+npm install
+
+# Correr el servidor local en localhost:8080
+npm run dev
+
+```
