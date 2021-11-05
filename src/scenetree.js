@@ -7,7 +7,41 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 //loading
 const textureLoader = new THREE.TextureLoader()
-const woodTexture  = textureLoader.load('/textures/wood.jpg')
+const woodTexture= textureLoader.load('/textures/wood.jpg')
+const stoneBase= textureLoader.load('/textures/Stone_Tiles_003_COLOR.jpg')
+const stoneDisp=textureLoader.load('/textures/Stone_Tiles_003_DISP.png')
+const stoneNorm=textureLoader.load('/textures/Stone_Tiles_003_NORM.jpg')
+const stoneRou=textureLoader.load('/textures/Stone_Tiles_003_ROUGH.jpg')
+
+const concreteBaseB=textureLoader.load('/textures/Concrete_Wall_001_basecolor.jpg')
+const concreteBaseR=textureLoader.load('/textures/Concrete_Wall_001_basecolorRed.jpg')
+const concreteNorm=textureLoader.load('/textures/Concrete_Wall_001_normal.jpg')
+
+const waterNorm=textureLoader.load('/textures/Water_001_NORM.jpg')
+const waterBase=textureLoader.load('/textures/Water_001_COLOR.jpg')
+const waterDisp=textureLoader.load('/textures/Water_001_DISP.png')
+const waterOcc=textureLoader.load('/textures/Water_001_OCC.jpg')
+const waterspec=textureLoader.load('/textures/Water_001_SPEC.jpg')
+
+//stone texture obtained from https://3dtextures.me/2018/09/27/stone-tiles-003/
+//concrete texture obtained from https://3dtextures.me/2019/05/13/concrete-wall-001/
+const xPiso=100
+const yPiso=100
+stoneBase.wrapS= THREE.RepeatWrapping;
+stoneBase.wrapT= THREE.RepeatWrapping;
+
+stoneDisp.wrapS= THREE.RepeatWrapping;
+stoneDisp.wrapT= THREE.RepeatWrapping;
+
+stoneNorm.wrapS= THREE.RepeatWrapping;
+stoneNorm.wrapT= THREE.RepeatWrapping;
+
+stoneRou.wrapS= THREE.RepeatWrapping;
+stoneRou.wrapT= THREE.RepeatWrapping;
+//stoneNorm.repeat.set(xPiso,yPiso);
+stoneBase.repeat.set(xPiso,yPiso);
+stoneRou.repeat.set(xPiso,yPiso);
+stoneDisp.repeat.set(xPiso,yPiso);
 
 // Debug
 const gui = new dat.GUI()
@@ -33,14 +67,14 @@ const porton =new THREE.PlaneBufferGeometry(4,2)
 
 
 //objetos 
-const barril = new THREE.CylinderGeometry( .3, .3, .7, 19,7, false, 0, 6.3 );
+//const barril = new THREE.CylinderGeometry( .3, .3, .7, 19,7, false, 0, 6.3 );
 const fuente = new THREE.CylinderGeometry( .8, .8, .3, 19,7, false, 0, 6.3 );
 const pelota = new THREE.SphereGeometry( .2, 15, 16 );
 
 
 //objetos 
 fuente.translate(9,.1,-3)
-barril.translate(-5,.3,-6)
+//barril.translate(-5,.3,-6)
 pelota.translate(-4,.2,-6)
 //construccion
     //casas
@@ -63,6 +97,97 @@ piso.translate(0,0,0)
 
 // Materials
 
+const pisoPiedra = new THREE.MeshStandardMaterial({
+    map: stoneBase,
+    normalMap: stoneNorm,
+    roughnessMap: stoneRou,
+    //displacementMap:stoneDisp,
+    //displacementScale:0,
+    roughness:0.4,
+    
+}
+)
+
+const agua = new THREE.MeshStandardMaterial({
+    map: waterBase,
+    normalMap: waterNorm,
+    displacementMap: waterDisp,
+    displacementScale:0,
+    aoMap: waterOcc, 
+    aoMapIntensity:1,
+    reflectivity: .5     
+}
+)
+
+
+const donRmat= new THREE.MeshStandardMaterial({
+    map: concreteBaseB,
+    normalMap: concreteNorm,
+    roughness:0.4, 
+}
+)
+
+const flomat= new THREE.MeshStandardMaterial({
+    map: concreteBaseR,
+    normalMap: concreteNorm,
+    roughness:0.4, 
+}
+)
+
+const paredAmat= new THREE.MeshStandardMaterial({
+    color:0xe3a214,
+    normalMap: concreteNorm,
+    roughness:0.4, 
+}
+)
+const paredAzmat= new THREE.MeshStandardMaterial({
+    color:0xa5c6e5,
+    normalMap: concreteNorm,
+    roughness:0.4, 
+}
+)
+const paredBeimat= new THREE.MeshStandardMaterial({
+    color:0xe0daaa,
+    normalMap: concreteNorm,
+    roughness:0.4, 
+}
+)
+
+
+const paredRmat= new THREE.MeshStandardMaterial({
+    color:0xd42215,
+    normalMap: concreteNorm,
+    roughness:0.4, 
+}
+)
+const concreteBlanc = new THREE.MeshBasicMaterial({ 
+    color: 0xFFFFFF,
+    normalMap: concreteNorm
+});
+
+var cubeDonRMat = [
+    donRmat,
+    donRmat,
+    paredAzmat,
+    donRmat,
+    donRmat,
+    donRmat
+ ];
+ var cubeDonFMat = [
+    flomat,
+    flomat,
+    paredBeimat,
+    flomat,
+    flomat,
+    flomat
+ ];
+
+ const fuentemat = [
+    concreteBlanc,
+    agua,
+    concreteBlanc
+  ]
+
 const material = new THREE.MeshStandardMaterial()
 material.roughness = 0.5
 material.normalMap = woodTexture
@@ -76,22 +201,23 @@ materialRamon.color = new THREE.Color(0x6fabd1)
 materialBruja.color = new THREE.Color(0xe3a214)
 
 // Mesh
-const sphere = new THREE.Mesh(barril,material)
-const ronramon = new THREE.Mesh(casaDonRamon,materialRamon)
-const bruja71 = new THREE.Mesh(casaBruja,materialBruja)
-const DonaFlorinda = new THREE.Mesh(casaDonaFlo,materialRamon)
-const EscaleraB = new THREE.Mesh(baseEscalera,materialBruja)
-const Paty = new THREE.Mesh(casaPaty,materialRamon)
-const plane = new THREE.Mesh(piso, mat)
-const entradac =new THREE.Mesh(entrada,materialBruja)
-const entradab =new THREE.Mesh(entrada2,materialBruja)
-const entradat =new THREE.Mesh(entradaTecho,materialBruja)
+//const sphere = new THREE.Mesh(barril,material)
+const ronramon = new THREE.Mesh(casaDonRamon,cubeDonRMat)
+const bruja71 = new THREE.Mesh(casaBruja,paredAmat)
+const DonaFlorinda = new THREE.Mesh(casaDonaFlo,cubeDonFMat)
+const EscaleraB = new THREE.Mesh(baseEscalera,paredRmat)
+const Paty = new THREE.Mesh(casaPaty,paredAmat)
+const plane = new THREE.Mesh(piso, pisoPiedra)
+const entradac =new THREE.Mesh(entrada,paredAmat)
+const entradab =new THREE.Mesh(entrada2,paredAmat)
+const entradat =new THREE.Mesh(entradaTecho,paredAmat)
 const eporton =new THREE.Mesh(porton,portoncc)
-const lfuente =new THREE.Mesh(fuente,materialRamon)
+const lfuente =new THREE.Mesh(fuente,fuentemat)
 const pelotak =new THREE.Mesh(pelota,materialRamon)
 
 
-scene.add(sphere)
+
+//scene.add(sphere)
 scene.add(ronramon)
 scene.add(bruja71)
 scene.add(DonaFlorinda)
@@ -107,11 +233,115 @@ scene.add(lfuente,pelotak)
 
 //objetos importados 3d
 const loader3d = new GLTFLoader()
-loader3d.load( '/assets/stairs.glb', function ( gltf ) {
+/*loader3d.load( '/assets/stairs.glb', function ( gltf ) {
     const model = gltf.scene;
     model.scale.set(.03,.03,.03)
     model.position.set(-6.5,0,-8.6);
     model.rotateY( Math.PI / 2)
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );*/
+
+//Escalera obtenida de 
+
+loader3d.load( '/assets/stairs3.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(6,7,6)
+    model.position.set(-5,1.75,-8.7);
+    model.rotateY( -Math.PI/2)
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+
+//triciclo obtenido de paint3D
+loader3d.load( '/assets/triciclo.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(.8,1,1)
+    model.position.set(-1,.3,-5.7);
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+
+//Barril obtenido de paint3D
+loader3d.load( '/assets/barril.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(-3.8,.5,-6);
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+//Puertas obtenidas de paint3D
+loader3d.load( '/assets/puerta72.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(2.1,.5,-2.5);
+    model.rotateY(-Math.PI/2)
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+loader3d.load( '/assets/puerta71.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(1.1,.5,-8);
+    model.rotateY(-Math.PI/2)
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+loader3d.load( '/assets/puerta14.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(0,.5,-10.1);
+    //model.rotateY(-Math.PI/2)
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+
+loader3d.load( '/assets/puerta23.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(-6.1,2.4,-10.1);
+    //model.rotateY(-Math.PI/2)
     model.isDraggable = true;
     scene.add(model);
 
@@ -132,14 +362,28 @@ pointLight.position.z = 4
 scene.add(pointLight)
 
 
+const pointLight3 = new THREE.PointLight(0xFFFFFF, 2)
+pointLight3.position.set(-25.5,27,10.6)
+pointLight3.intensity = 1.4
+
+const pointLight4 = new THREE.PointLight(0xFFFFFF, 2)
+pointLight4.position.set(45,11,-55)
+pointLight4.rotateY( -Math.PI/2)
+pointLight4.intensity = 1.1
+
 const pointLight2 = new THREE.PointLight(0xFFFFFF, 2)
-pointLight2.position.set(0,0.4,1.3)
-pointLight2.intensity = 1.7
+pointLight2.position.set(-24,10,-80)
+pointLight2.rotateY( Math.PI/2)
+pointLight2.rotateX( Math.PI/2)
+pointLight2.intensity = 1.5
 
-scene.add(pointLight2)
+//scene.add(pointLight2)
+scene.add(pointLight3)
+scene.add(pointLight4)
 
-gui.add(pointLight2.position, 'y')
+
 gui.add(pointLight2.position, 'x')
+gui.add(pointLight2.position, 'y')
 gui.add(pointLight2.position, 'z')
 gui.add(pointLight2, 'intensity')
 
