@@ -22,11 +22,17 @@ npm run dev
 
 ## Referencias
 Se utilizaron los siguientes modelos :
+
   -Triciclo, barril, puertas, cilindro, plantas, guacales -> Paint3D
+  
   -Ventana->https://www.cgtrader.com/free-3d-models/architectural/door/window--11
+  
   -Escalera->https://www.cgtrader.com/free-3d-models/household/other/pia-semi-encaixe-bathroom-sink
+  
   -Lavabo -> https://www.cgtrader.com/items/170840/download-page
+  
  Algunos de los modelos fueron modificados por mi para ser más fieles al escenario que intenté recrear
+ 
  
  Imagen de fondo:https://cdn.polyhaven.com/asset_img/primary/abandoned_tank_farm_03.png
   
