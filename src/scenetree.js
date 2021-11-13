@@ -2,26 +2,37 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import { CubeRefractionMapping, PixelFormat } from 'three'
+import { CubeRefractionMapping, DoubleSide, PixelFormat } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 //loading
 const textureLoader = new THREE.TextureLoader()
-const woodTexture= textureLoader.load('/textures/wood.jpg')
+
+//textura madera
+const woodBase= textureLoader.load('/textures/woodColor.jpeg')
+const woodNorm= textureLoader.load('/textures/woodnormal.jpg')
+
+//textura piedra
 const stoneBase= textureLoader.load('/textures/Stone_Tiles_003_COLOR.jpg')
 const stoneDisp=textureLoader.load('/textures/Stone_Tiles_003_DISP.png')
 const stoneNorm=textureLoader.load('/textures/Stone_Tiles_003_NORM.jpg')
 const stoneRou=textureLoader.load('/textures/Stone_Tiles_003_ROUGH.jpg')
 
+//textura pared
 const concreteBaseB=textureLoader.load('/textures/Concrete_Wall_001_basecolor.jpg')
 const concreteBaseR=textureLoader.load('/textures/Concrete_Wall_001_basecolorRed.jpg')
 const concreteNorm=textureLoader.load('/textures/Concrete_Wall_001_normal.jpg')
 
+//textura agua
 const waterNorm=textureLoader.load('/textures/Water_001_NORM.jpg')
 const waterBase=textureLoader.load('/textures/Water_001_COLOR.jpg')
 const waterDisp=textureLoader.load('/textures/Water_001_DISP.png')
 const waterOcc=textureLoader.load('/textures/Water_001_OCC.jpg')
-const waterspec=textureLoader.load('/textures/Water_001_SPEC.jpg')
+
+//textura pelota
+const ballBase=textureLoader.load('/textures/BeachBallColor.jpg')
+const ballTrans=textureLoader.load('/textures/BeachBallTransp.jpg')
+
 
 //stone texture obtained from https://3dtextures.me/2018/09/27/stone-tiles-003/
 //concrete texture obtained from https://3dtextures.me/2019/05/13/concrete-wall-001/
@@ -62,7 +73,7 @@ const entrada = new THREE.BoxGeometry( 6, 4, 9 );
 const entrada2 = new THREE.BoxGeometry( 6, 2, 4 );
 const entradaTecho = new THREE.BoxGeometry( 6, .5, 4 );
 const piso = new THREE.PlaneBufferGeometry(2000, 2000, 8, 8)
-const porton =new THREE.PlaneBufferGeometry(4,2)
+const porton =new THREE.PlaneBufferGeometry(4,1.5)
 
 
 
@@ -88,7 +99,7 @@ entrada.translate(-10,2,-9.5)
 entrada2.translate(-10,1,1)
 entradaTecho.translate(-10,1.75,-3)
 porton.rotateY( - Math.PI / 2);
-porton.translate(-13,1,-3)
+porton.translate(-13,.75,-3)
 piso.rotateX( - Math.PI / 2);
 piso.translate(0,0,0)
 
@@ -96,6 +107,22 @@ piso.translate(0,0,0)
 
 
 // Materials
+
+const  woodMat= new THREE.MeshStandardMaterial({
+    map: woodBase,
+    normalMap: woodNorm,
+    roughness: 0.5,
+    side: DoubleSide, 
+
+})
+
+
+const pelotaMat = new THREE.MeshStandardMaterial({
+    map: ballBase,
+    transparent:ballTrans,
+    roughness:0.4,
+}
+)
 
 const pisoPiedra = new THREE.MeshStandardMaterial({
     map: stoneBase,
@@ -188,10 +215,7 @@ var cubeDonRMat = [
     concreteBlanc
   ]
 
-const material = new THREE.MeshStandardMaterial()
-material.roughness = 0.5
-material.normalMap = woodTexture
-material.color = new THREE.Color(0x50300c)
+
 const mat = new THREE.MeshBasicMaterial({ color: 0x50300c, side: THREE.DoubleSide });
 const portoncc = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
 
@@ -201,7 +225,7 @@ materialRamon.color = new THREE.Color(0x6fabd1)
 materialBruja.color = new THREE.Color(0xe3a214)
 
 // Mesh
-//const sphere = new THREE.Mesh(barril,material)
+
 const ronramon = new THREE.Mesh(casaDonRamon,cubeDonRMat)
 const bruja71 = new THREE.Mesh(casaBruja,paredAmat)
 const DonaFlorinda = new THREE.Mesh(casaDonaFlo,cubeDonFMat)
@@ -211,9 +235,9 @@ const plane = new THREE.Mesh(piso, pisoPiedra)
 const entradac =new THREE.Mesh(entrada,paredAmat)
 const entradab =new THREE.Mesh(entrada2,paredAmat)
 const entradat =new THREE.Mesh(entradaTecho,paredAmat)
-const eporton =new THREE.Mesh(porton,portoncc)
+const eporton =new THREE.Mesh(porton,woodMat)
 const lfuente =new THREE.Mesh(fuente,fuentemat)
-const pelotak =new THREE.Mesh(pelota,materialRamon)
+const pelotak =new THREE.Mesh(pelota,pelotaMat)
 
 
 
@@ -233,23 +257,11 @@ scene.add(lfuente,pelotak)
 
 //objetos importados 3d
 const loader3d = new GLTFLoader()
-/*loader3d.load( '/assets/stairs.glb', function ( gltf ) {
-    const model = gltf.scene;
-    model.scale.set(.03,.03,.03)
-    model.position.set(-6.5,0,-8.6);
-    model.rotateY( Math.PI / 2)
-    model.isDraggable = true;
-    scene.add(model);
 
-}, undefined, function ( error ) {
 
-	console.error( error );
+//Escalera obtenida de https://www.cgtrader.com/free-3d-models/household/other/pia-semi-encaixe-bathroom-sink y modificada por mi
 
-} );*/
-
-//Escalera obtenida de 
-
-loader3d.load( '/assets/stairs3.glb', function ( gltf ) {
+loader3d.load( '/assets/stairs.glb', function ( gltf ) {
     const model = gltf.scene;
     model.scale.set(6,7,6)
     model.position.set(-5,1.75,-8.7);
@@ -293,7 +305,7 @@ loader3d.load( '/assets/barril.glb', function ( gltf ) {
 
 } );
 
-//Puertas obtenidas de paint3D
+//Puertas obtenidas de paint3D y modificadas por mi
 loader3d.load( '/assets/puerta72.glb', function ( gltf ) {
     const model = gltf.scene;
     model.scale.set(1.5,1.5,1.5)
@@ -351,6 +363,100 @@ loader3d.load( '/assets/puerta23.glb', function ( gltf ) {
 
 } );
 
+//ventanas Obtenidas de https://www.cgtrader.com/free-3d-models/architectural/door/window--11   y modificadas por mi
+//ventana don ramon
+loader3d.load( '/assets/ventana.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(2.3,1,-4.5);
+    model.rotateY(-Math.PI/2)
+    model.isDraggable = true;
+    
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+//ventana bruja
+
+loader3d.load( '/assets/ventana.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(2,1,-7.85);
+    model.isDraggable = true;
+    
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+//ventana doña florinda
+
+loader3d.load( '/assets/ventana.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1.5,1.5,1.5)
+    model.position.set(-2,1,-10.31);
+    model.isDraggable = true;
+    
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+
+//obtenido de Pain3D
+loader3d.load( '/assets/propsDonRamon.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(3,3,3)
+    model.position.set(2.9,.9,-4.5);
+    model.rotateY(-Math.PI/2)
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+loader3d.load( '/assets/propsDonRamon.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(3,3,3)
+    model.position.set(-3.5,.9,-10.9);
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+//lavabo obtenido de https://www.cgtrader.com/items/170840/download-page y modificado por mi
+loader3d.load( '/assets/lavabo.glb', function ( gltf ) {
+    const model = gltf.scene;
+    model.scale.set(1,1,1)
+    model.position.set(-5.7,.3,-9.7);
+    model.rotateY(Math.PI/2)
+
+    model.isDraggable = true;
+    scene.add(model);
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
 
 
 // Lights
@@ -365,16 +471,18 @@ scene.add(pointLight)
 const pointLight3 = new THREE.PointLight(0xFFFFFF, 2)
 pointLight3.position.set(-25.5,27,10.6)
 pointLight3.intensity = 1.4
+pointLight3.isLight=true
 
 const pointLight4 = new THREE.PointLight(0xFFFFFF, 2)
 pointLight4.position.set(45,11,-55)
 pointLight4.rotateY( -Math.PI/2)
+pointLight4.isLight=true
 pointLight4.intensity = 1.1
 
 const pointLight2 = new THREE.PointLight(0xFFFFFF, 2)
 pointLight2.position.set(-24,10,-80)
-pointLight2.rotateY( Math.PI/2)
-pointLight2.rotateX( Math.PI/2)
+pointLight2.isLight=true
+//pointLight2.rotateY( Math.PI/2)
 pointLight2.intensity = 1.5
 
 //scene.add(pointLight2)
@@ -412,15 +520,25 @@ window.addEventListener('resize', () =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
+
+   const loader = new THREE.TextureLoader();
+    const texture = loader.load(
+      'https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/wide_street_01.jpg',
+      () => {
+        const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+        rt.fromEquirectangularTexture(renderer, texture);
+        scene.background = rt.texture;
+      });
+
+
 /**
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 0
-camera.position.y = 0
-camera.position.z = 2
-//camera.up.set(0,-1,0)
+const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 1, 2000)
+camera.position.x = -2
+camera.position.y = 1
+camera.position.z = 8
 
 scene.add(camera)
 
@@ -468,6 +586,7 @@ const tick = () =>
 
     // Render
     renderer.render(scene, camera)
+   
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
