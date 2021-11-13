@@ -36,5 +36,5 @@ Se utilizaron los siguientes modelos :
  Algunos de los modelos fueron modificados por mi para ser más fieles al escenario que intenté recrear
  
  
- Imagen de fondo:https://cdn.polyhaven.com/asset_img/primary/abandoned_tank_farm_03.png
+ Imagen de fondo:https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/wide_street_01.jpg
   
