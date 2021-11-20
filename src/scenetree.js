@@ -550,9 +550,7 @@ gui.add(camera.position, 'y')
 gui.add(camera.position, 'x')
 gui.add(camera.position, 'z')
 
-//gui.add(pointLight2, 'intensity')
-const helper = new THREE.CameraHelper( camera );
-scene.add( helper );
+
 
 /**
  * Renderer
@@ -576,12 +574,16 @@ function onDocumentKeyDown(event) {
     var keyCode = event.which;
     if (keyCode == 87) {
         pelotak.position.z -= ySpeed;
+        camera.position.z=pelotak.position.z;
     } else if (keyCode == 83) {
         pelotak.position.z += ySpeed;
+        camera.position.z=pelotak.position.z;
     } else if (keyCode == 65) {
         pelotak.position.x -= xSpeed;
+        camera.position.x=pelotak.position.x-5.5
     } else if (keyCode == 68) {
         pelotak.position.x += xSpeed;
+        camera.position.x=pelotak.position.x-5.5
     } else if (keyCode == 32) {
         pelotak.position.set(0, 0, 0);
     }
@@ -600,9 +602,30 @@ audioLoader.load( '/sounds/bounce.mp3', function ( buffer ) {
 
         const audio = new THREE.PositionalAudio( listener );
         audio.setBuffer( buffer );
-        audio.setVolume(30);
+        audio.setVolume(100);
         pelotak.add( audio );
 });
+
+var sound = new THREE.Audio( listener );
+audioLoader.load( 'sounds/vecindad.mp3', function( buffer ) {
+    sound.setBuffer( buffer );
+    sound.setLoop(true);
+    sound.setVolume(.1);
+    sound.play();
+},
+            // onProgress callback
+            function ( xhr ) {
+                console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+            },
+
+            // onError callback
+            function ( err ) {
+                console.log( 'Un error ha ocurrido' );
+            }
+
+);
+
+
 
 const tick = () =>
 {
