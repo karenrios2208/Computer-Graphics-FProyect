@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import { CubeRefractionMapping, DoubleSide, PixelFormat } from 'three'
+import { CubeRefractionMapping, DoubleSide, PixelFormat, SpotLight } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 //loading
@@ -430,6 +430,7 @@ loader3d.load( '/assets/propsDonRamon.glb', function ( gltf ) {
 
 loader3d.load( '/assets/propsDonRamon.glb', function ( gltf ) {
     const model = gltf.scene;
+    
     model.scale.set(3,3,3)
     model.position.set(-3.5,.9,-10.9);
     model.isDraggable = true;
@@ -440,6 +441,7 @@ loader3d.load( '/assets/propsDonRamon.glb', function ( gltf ) {
 	console.error( error );
 
 } );
+
 
 //lavabo obtenido de https://www.cgtrader.com/items/170840/download-page y modificado por mi
 loader3d.load( '/assets/lavabo.glb', function ( gltf ) {
@@ -459,7 +461,6 @@ loader3d.load( '/assets/lavabo.glb', function ( gltf ) {
 
 
 
-// Lights
 
 const pointLight = new THREE.PointLight(0xffffff, 0.1)
 pointLight.position.x = 2
@@ -490,13 +491,10 @@ scene.add(pointLight3)
 scene.add(pointLight4)
 
 
-gui.add(pointLight2.position, 'x')
-gui.add(pointLight2.position, 'y')
-gui.add(pointLight2.position, 'z')
-gui.add(pointLight2, 'intensity')
 
 const pointLightHelper = new THREE.PointLightHelper(pointLight2, .2)
 scene.add(pointLightHelper)
+
 /**
  * Sizes
  */
@@ -565,21 +563,72 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
+document.addEventListener("keydown", onDocumentKeyDown, false);
 /**
  * Animate
  */
 
-
 const clock = new THREE.Clock()
+var xSpeed = 0.5;
+var ySpeed = 0.5;
+
+function onDocumentKeyDown(event) {
+    var keyCode = event.which;
+    if (keyCode == 87) {
+        pelotak.position.z -= ySpeed;
+    } else if (keyCode == 83) {
+        pelotak.position.z += ySpeed;
+    } else if (keyCode == 65) {
+        pelotak.position.x -= xSpeed;
+    } else if (keyCode == 68) {
+        pelotak.position.x += xSpeed;
+    } else if (keyCode == 32) {
+        pelotak.position.set(0, 0, 0);
+    }
+
+};
+const speed = 2.5;
+const height = 1;
+const offset = 0.5;
+//audio
+const audioLoader = new THREE.AudioLoader();
+
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+audioLoader.load( '/sounds/bounce.mp3', function ( buffer ) {
+
+        const audio = new THREE.PositionalAudio( listener );
+        audio.setBuffer( buffer );
+        audio.setVolume(30);
+        pelotak.add( audio );
+});
 
 const tick = () =>
 {
 
-    const elapsedTime = clock.getElapsedTime()
-
+    const time= clock.getElapsedTime()
     // Update objects
-    //sphere.rotation.y = .5 * elapsedTime
+
+        const previousHeight = pelotak.position.y;
+        pelotak.position.y = Math.abs( Math.sin( offset + ( time * speed ) ) * height );
+
+        if ( pelotak.position.y < previousHeight ) {
+
+            pelotak.userData.down = true;
+
+        } else {
+
+            if ( pelotak.userData.down === true ) {
+                const audio = pelotak.children[ 0 ];
+                audio.play(); // play audio with perfect timing when ball hits the surface
+                pelotak.userData.down = false;
+
+            }
+
+        }
+
+
 
     // Update Orbital Controls
     // controls.update()
@@ -590,6 +639,7 @@ const tick = () =>
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+
 }
 
 tick()
