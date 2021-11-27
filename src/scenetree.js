@@ -6,7 +6,6 @@ import { CubeRefractionMapping, DoubleSide, PixelFormat, SpotLight } from 'three
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
-function main() {
 //loading
 const textureLoader = new THREE.TextureLoader()
 
@@ -56,8 +55,6 @@ stoneBase.repeat.set(xPiso,yPiso);
 stoneRou.repeat.set(xPiso,yPiso);
 stoneDisp.repeat.set(xPiso,yPiso);
 
-// Debug
-const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -218,8 +215,7 @@ var cubeDonRMat = [
   ]
 
 
-const mat = new THREE.MeshBasicMaterial({ color: 0x50300c, side: THREE.DoubleSide });
-const portoncc = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+
 
 const materialRamon = new THREE.MeshStandardMaterial()
 const materialBruja = new THREE.MeshStandardMaterial()
@@ -536,21 +532,13 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 1, 2000)
-camera.position.x = -2
+camera.position.x = -4
 camera.position.y = 1
-camera.position.z = 8
+camera.position.z = -3
+
 
 scene.add(camera)
 
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
-
-//helper de la camara
-
-gui.add(camera.position, 'y')
-gui.add(camera.position, 'x')
-gui.add(camera.position, 'z')
 
 
 
@@ -571,26 +559,48 @@ document.addEventListener("keydown", onDocumentKeyDown, false);
 const clock = new THREE.Clock()
 var xSpeed = 0.5;
 var ySpeed = 0.5;
+const cameraOffset = new THREE.Vector3(-5, 1.0, -2); // NOTE Constant offset between the camera and the target
+
+// NOTE Assuming the camera is direct child of the Scene
+
+const objectPosition = new THREE.Vector3();
 
 function onDocumentKeyDown(event) {
     var keyCode = event.which;
     if (keyCode == 87) {
         pelotak.position.z -= ySpeed;
-        camera.position.z=pelotak.position.z;
     } else if (keyCode == 83) {
         pelotak.position.z += ySpeed;
-        camera.position.z=pelotak.position.z;
     } else if (keyCode == 65) {
         pelotak.position.x -= xSpeed;
-        camera.position.x=pelotak.position.x-5.5
     } else if (keyCode == 68) {
-        pelotak.position.x += xSpeed;
-        camera.position.x=pelotak.position.x-5.5
-    } else if (keyCode == 32) {
-        pelotak.position.set(0, 0, 0);
-    }
+        pelotak.position.x += xSpeed;;
+    } 
+    else if (keyCode == 32) {
+   
+        //código para girar la cámara
+        var i = 1;      
+       function myLoop() {         
+        setTimeout(function() { 
+            camera.rotateOnWorldAxis(new THREE.Vector3(0,1,0),-Math.PI/12);
+          i++;                   
+          if (i < 25) {           
+            myLoop();             
+          }                     
+        }, 80)
+      }
+      
+      myLoop(); 
 
+    }
+    pelotak.getWorldPosition(objectPosition);
+    objectPosition.y=1;
+    camera.position.copy(objectPosition).add(cameraOffset);
 };
+
+
+
+
 const speed = 2.5;
 const height = 1;
 const offset = 0.5;
@@ -668,5 +678,3 @@ const tick = () =>
 }
 
 tick()
-}
-main();
