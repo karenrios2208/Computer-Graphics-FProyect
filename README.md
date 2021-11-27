@@ -1,13 +1,13 @@
 # Computer-Graphics-FProyect
 A01173394 - Karen Berenice Rios López
-Este proyecto se basara en recrear el escenario principal de la serie "El chavo del 8"
+Este proyecto se basó en recrear el escenario principal de la serie "El chavo del 8"
 Imagenes de referencia:
 
 https://www.tvnotas.com.mx/sites/default/files/styles/imagenprincipal_1024x576/public/articulos/2020/03/06/tvn-06032020125646.jpg?itok=OtbBckC7
 
 https://socialgeek.co/wp-content/uploads/2015/11/Foto-Vecindad-2.jpg
 
-Espero reconstruir el escenario principal con los objetos mostrados y además agregar otras funcionalidades dinámicas como poder desplazarte o que suceda una acción al acercarte a algún objeto.
+Se esperaba reconstruir el escenario principal con los objetos mostrados y además agregar otras funcionalidades dinámicas como poder desplazarte o que sucediera una acción en la escena.
 ## Setup
 Se necesita descargar Node.js. y correr los siguientes comandos:
 
@@ -23,6 +23,7 @@ npm run dev
 ```
 
 ## Referencias
+Se utilizó la librería de Three js.
 Se utilizaron los siguientes modelos :
 
   -Triciclo, barril, puertas, cilindro, plantas, guacales -> Paint3D
@@ -35,6 +36,10 @@ Se utilizaron los siguientes modelos :
   
  Algunos de los modelos fueron modificados por mi para ser más fieles al escenario que intenté recrear
  
- 
+ Texturas:
+  -Textura de piedras -> https://3dtextures.me/2018/09/27/stone-tiles-003/
+  
+  -Textura de concreto -> https://3dtextures.me/2019/05/13/concrete-wall-001/
+  
  Imagen de fondo:https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/wide_street_01.jpg
   
